@@ -1,0 +1,3014 @@
+
+<!-- Your monitor number = #$34T# -->
+
+
+## ⛅ Warm Up for Day 4.
+
+### Deploy and TShoot RSTHayup
+- Run _rstHayupPy/main.py
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### 1. BGP is configured on all BGP Routers, all but R1 is able to access any of I4-GOOGLE's IP addresses. 
+Determine and TShoot the issue.
+- You may modify BGP configurations but DO NOT Delete the whole BGP instance.
+
+| Router      | ASN |
+| ---         | --- |
+| R1          | 1   |
+| I1-CONVERGE | 34  |
+| I2-PLDT     | 25  |
+| I3-GLOBE    | 34  |
+| I4-GOOGLE   | 25  |
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### 2. I3-GLOBE and I1-CONVERGE are unable to ping the other's loopback IP.
+Determine and TShoot the issue.
+- Solve this problem by only modifying configurations on I2-PLDT
+
+
+
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### 3. A network engineer has configured OSPF on R1,R2,R3,R4,R5, and R6, all connected networks are advertised via OSPF but R1 fails to access R4.
+Determine and TShoot the issue.
+- R4 is innaccessible for this scenario so DO NOT Modify anything on R4
+- You may modify OSPF and delete other configurations but DO NOT Delete the whole OSPF process.
+- End Goal is for R1 to ping R4 (4.4.4.4)
+
+__R4's OSPF Interface Status__
+~~~
+R4#sh ip ospf int e1/2
+Ethernet1/2 is up, line protocol is up 
+  Internet Address 10.1.1.10/30, Area 34, Attached via Network Statement
+  Process ID 1, Router ID 4.4.4.4, Network Type POINT_TO_POINT, Cost: 10000
+  Topology-MTID    Cost    Disabled    Shutdown      Topology Name
+        0           10000     no          no            Base
+  Transmit Delay is 1 sec, State POINT_TO_POINT
+  Timer intervals configured, Hello 15, Dead 60, Wait 60, Retransmit 5
+    oob-resync timeout 60
+    Hello due in 00:00:06
+  Supports Link-local Signaling (LLS)
+  Cisco NSF helper support enabled
+  IETF NSF helper support enabled
+  Index 1/1/1, flood queue length 0
+  Next 0x0(0)/0x0(0)/0x0(0)
+  Last flood scan length is 1, maximum is 10
+  Last flood scan time is 0 msec, maximum is 0 msec
+  Neighbor Count is 0, Adjacent neighbor count is 0 
+  Suppress hello for 0 neighbor(s)
+~~~
+
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### 4. Configure Area 26 to allow only Type 1 and Type 2 LSA, and injecting a default route via the ABR.
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### 5. Route Summarization and Filtering
+Tip* Take note of the correct ABR/s to accomplish each task
+
+| Router  | Interface    | Area  |
+| ---     | ---          | ---   |
+| R4 - R3 | e1/2 - e1/2  | 34    |
+| R3 - R2 | e1/1 - e1/1  | 0     |
+| R3 - R2 | e0/2 - e0/2  | 0     |
+| R2 - R1 | e1/2 - e1/0  | 12    |
+| R3 - R5 | e1/0 - e1/3  | 352   |
+| R2 - R5 | e1/0 - e1/2  | 352   |
+| R2 - R6 | e1/3 - e1/2  | 26    |
+| R6 - FW | e1/1 - port2 | 26    |
+
+
+<br>
+
+
+1. Summarize the ff specified routes in Area 26 when entering Area 0 
+~~~
+O IA     10.6.144.0/24 [110/20001] via 10.1.2.5, 00:07:14, Ethernet0/2
+                       [110/20001] via 10.1.1.5, 00:07:14, Ethernet1/1
+O IA     10.6.157.0/24 [110/20001] via 10.1.2.5, 00:07:14, Ethernet0/2
+                       [110/20001] via 10.1.1.5, 00:07:14, Ethernet1/1
+O IA     10.6.159.0/24 [110/20001] via 10.1.2.5, 00:07:14, Ethernet0/2
+                       [110/20001] via 10.1.1.5, 00:07:14, Ethernet1/1
+O IA     10.6.171.0/24 [110/20001] via 10.1.2.5, 00:07:14, Ethernet0/2
+                       [110/20001] via 10.1.1.5, 00:07:14, Ethernet1/1
+O IA     10.6.180.0/25 [110/20001] via 10.1.2.5, 00:07:14, Ethernet0/2
+                       [110/20001] via 10.1.1.5, 00:07:14, Ethernet1/1
+O IA     10.6.180.128/25 [110/20001] via 10.1.2.5, 00:07:14, Ethernet0/2
+                         [110/20001] via 10.1.1.5, 00:07:14, Ethernet1/1
+
+R3#
+~~~
+
+
+<br>
+
+
+2. Summarize the ff displayed routes in Area 26, then filter the resulting summarized route from being advertised into Area 12.
+~~~
+O IA     10.26.22.0/23 [110/20001] via 10.1.1.2, 00:37:42, Ethernet1/0
+O IA     10.26.29.0/24 [110/20001] via 10.1.1.2, 00:37:42, Ethernet1/0
+O IA     10.26.32.0/22 [110/20001] via 10.1.1.2, 00:37:42, Ethernet1/0
+O IA     10.26.41.0/25 [110/20001] via 10.1.1.2, 00:37:42, Ethernet1/0
+O IA     10.26.47.192/26 [110/20001] via 10.1.1.2, 00:37:42, Ethernet1/0
+R1#
+~~~
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+# IPv6 Deployment
+
+### IPv6 Address Compression Rules
+
+1. 2001:0db8:0000:0000:0000:0000:0000:0000 /64
+
+
+2. 0000:0000:0000:0000:0000:0000:0000:0000 /0
+
+      
+3. fe80:0000:0000:0000:000a:0000:0000:000f /10
+
+
+4. fd00:0000:0000:3000:0000:0000:0000:0000 /64
+
+
+5. 0000:0000:0000:0000:0000:0000:0000:0001 /128
+
+     
+6. ff00:0000:0000:beef:a00a:0aa0:0000:0000 /12
+
+
+
+
+&nbsp;
+---
+&nbsp;
+
+
+| Decimal | Binary  | Hexadecimal |
+| ---     | ---     | ---         |
+| 0       | 0 0 0 0 | 0           |
+| 1       | 0 0 0 1 | 1           |
+| 2       | 0 0 1 0 | 2           | 
+| 3       | 0 0 1 1 | 3           |
+| 4       | 0 1 0 0 | 4           |
+| 5       | 0 1 0 1 | 5           |
+| 6       | 0 1 1 0 | 6           |
+| 7       | 0 1 1 1 | 7           |
+| 8       | 1 0 0 0 | 8           |
+| 9       | 1 0 0 1 | 9           |
+| 10      | 1 0 1 0 | A           |
+| 11      | 1 0 1 1 | B           |
+| 12      | 1 1 0 0 | C           |
+| 13      | 1 1 0 1 | D           |
+| 14      | 1 1 1 0 | E           |
+| 15      | 1 1 1 1 | F           |
+
+
+&nbsp;
+---
+&nbsp;
+
+
+| Prefix | Hextet | Hexadecimal | i   |
+| ---    | ---    | ---         | --- |
+| /32    |        |             |     |
+| /41    |        |             |     |         
+| /70    |        |             |     |
+| /7     |        |             |     |
+| /111   |        |             |     |
+| /124   |        |             |     |
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### 🎯 Exercise: Subnet for 8 offices using the network address fd00:1::/64
+
+<br>
+
+### CAI Method
+
+
+<br>
+<br>
+
+
+__CONVERT *(Bit Value. NOT Length)*__  
+
+__ADD__  
+
+__INSERT(*IPASOK Many Times*)__  
+
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### 🎯 Exercise: Subnet for 4 offices using the network address fd00:2::/88
+
+__CONVERT *(Bit Value. NOT Length)*__  
+
+__ADD__  
+
+__INSERT(*IPASOK Many Times*)__  
+
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### 🎯 Exercise: Subnet for 52 offices using the network address fd00:3:0:33::/112  Determine the 6th subnet.
+
+__CONVERT *(Bit Value. NOT Length)*__  
+
+__ADD__  
+
+__INSERT(*IPASOK Many Times*)__  
+
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### 🎯 Exercise: From the first subnetting exercise, Deploy the second office based on the ff:
+- Apply the FIRST IP on R2's e0/2
+- Apply the LAST IP that is not a reserved ANYCAST on R3's e0/2 interface
+
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+## IPv6 Routing
+
+### BGP IPv6 Address Family
+
+~~~
+!@ISP4 - GOOGLE
+conf t
+ router bgp 25
+  neigh b:3:4:b::3 remote-as 34
+  neigh b:2:4:b::2 remote-as 25
+  neigh b:1:4:b::4 remote-as 34
+  address-family ipv6
+   neigh b:3:4:b::3 activate
+   neigh b:2:4:b::2 activate
+   neigh b:1:4:b::4 activate
+   network b55::1/128
+   network 8:8:8:8::8888/128
+   network 2001:4860:4860::8844/128
+   network b:3:4:b::/64
+   network b:2:4:b::/64
+   network b:1:4:b::/64
+   end
+~~~
+
+<br>
+
+~~~
+!@ISP3 - GLOBE
+conf t
+ router bgp 34
+  neigh b:3:4:b::5 remote-as 25
+  neigh b:1:2:b::2 remote-as 25
+  neigh b:1:33:b::1 remote-as 1
+  address-family ipv6
+   neigh b:3:4:b::5 activate
+   neigh b:1:2:b::2 activate
+   neigh b:1:33:b::1 activate
+   network b:3:4:b::/64
+   network b:1:2:b::/64
+   network b:1:33:b::/64
+   network b33::1/128
+   end
+~~~
+
+<br>
+
+~~~				
+!@ISP2 - PLDT
+conf t
+router bgp 25
+ neigh b:2:1:b::4 remote-as 34
+ neigh b:2:4:b::5 remote-as 25
+ neigh b:1:2:b::3 remote-as 34
+ neigh b:1:22:b::1 remote-as 1
+ address-family ipv6
+  neigh b:2:4:b::5 activate
+  neigh b:2:1:b::4 activate
+  neigh b:1:2:b::3 activate
+  neigh b:1:22:b::1 activate
+  network b:1:2:b::/64
+  network b:2:1:b::/64
+  network b:1:22:b::/64
+  network b22::1/128
+  end
+~~~
+
+<br>
+
+~~~
+!@ISP1 - Converge
+conf t
+ router bgp 34
+  neigh b:1:4:b::5 remote-as 25
+  neigh b:2:1:b::2 remote-as 25
+  neigh b:1:11:b::1 remote-as 1
+  address-family ipv6
+   neigh b:1:4:b::5 activate
+   neigh b:2:1:b::2 activate
+   neigh b:1:11:b::1 activate
+   network b:1:4:b::/64
+   network b:2:1:b::/64
+   network b:1:11:b::/64
+   network b44::1/128
+   end
+~~~
+
+<br>
+
+~~~
+!@R1
+conf t
+ router bgp 1
+  neigh b:1:33:b::3 remote-as 34
+  neigh b:1:22:b::2 remote-as 25
+  neigh b:1:11:b::4 remote-as 34
+  address-family ipv6
+   neigh b:1:33:b::3 activate
+   neigh b:1:22:b::2 activate
+   neigh b:1:11:b::4 activate
+   network FEC0:1::/122
+   network b:1:33:b::/64
+   network b:1:22:b::/64
+   network b:1:11:b::/64
+   end
+ping 8:8:8:8::8888
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### OSPFv3
+
+~~~
+!@R1
+conf t
+ router ospfv3 6
+  router-id 1.1.1.1
+  auto-cost reference-bandwidth 10000
+  exit
+ !
+ int lo1
+  ipv6 ospf 6 area 12
+ int e1/0
+  ipv6 ospf 6 area 12
+  end
+~~~
+
+<br>
+
+~~~
+!@R2
+conf t
+ router ospfv3 6
+  router-id 2.2.2.2
+  auto-cost reference-bandwidth 10000
+ int lo2
+  ipv6 ospf 6 area 0
+ int e1/1
+  ipv6 ospf 6 area 0
+ int e1/2
+  ipv6 ospf 6 area 12
+  end
+~~~
+
+<br>
+
+~~~
+!@R3
+conf t
+ router ospfv3 6
+  router-id 3.3.3.3
+  auto-cost reference-bandwidth 10000
+ int lo3
+  ipv6 ospf 6 area 0
+ int e1/1
+  ipv6 ospf 6 area 0
+  end
+~~~
+
+<br>
+
+~~~
+!@R4
+conf t
+ router ospfv3 6
+  router-id 4.4.4.4
+  auto-cost reference-bandwidth 10000
+ int lo4
+  ipv6 ospf 6 area 34
+  end
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### IPv6 Tunneling
+
+~~~
+!@R3
+conf t
+ interface Tunnel34
+  no ip address
+  ipv6 address 2026::34:1/122
+  tunnel source lo3
+  tunnel destination 4.4.4.4
+  tunnel mode ipv6ip
+  end
+~~~
+
+<br>
+
+~~~
+!@R4
+conf t
+ interface Tunnel34
+  no ip address
+  ipv6 address 2026::34:2/122
+  tunnel source lo4
+  tunnel destination 3.3.3.3
+  tunnel mode ipv6ip
+ end
+ping 2026::34:1
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### Exercise: Configure R6 via IPv6 tunneling
+1. Configure OSPFv3 for R6 and advertise only its Loopback 46
+2. Create a Tunnel 46 for IPv6 tunneling on both R6 to R4
+3. Using the IPv6 address fd00:46::/126
+- Apply the FIRST IP on R6's Tunnel 46
+- Apply the LAST IP on R4's Tunnel 46
+- Assign the tunnel to area 34
+
+ 
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### OSPFv6 & BGP Redistribution
+
+~~~
+!@R1
+conf t
+ router ospfv3 6
+  address-family ipv6
+   default-information originate always
+   end
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+## EIGRP IPv6
+
+__CLASSIC IPV6 EIGRP__
+~~~
+!@R4
+conf t
+ ipv6 router eigrp 10
+  eigrp router-id 4.4.4.4
+  no shut
+ int e1/0
+  ipv6 eigrp 10
+ int e1/1
+  ipv6 eigrp 10
+  end
+~~~
+
+<br>
+
+~~~
+!@C1
+conf t
+ ipv6 router eigrp 10
+  eigrp router-id 10.2.1.1
+  no shut
+ int lo1
+  ipv6 eigrp 10
+ int e1/1
+  ipv6 eigrp 10
+ int vlan 10
+  ipv6 eigrp 10
+ int vlan 20
+  ipv6 eigrp 10
+ int vlan 100
+  ipv6 eigrp 10
+  end
+~~~
+
+<br>
+
+~~~	
+!@C2
+conf t
+ ipv6 router eigrp 10
+  eigrp router-id 10.2.1.2
+  no shut
+ int lo2
+  ipv6 eigrp 10
+ int e1/1
+  ipv6 eigrp 10
+ int vlan 10
+  ipv6 eigrp 10
+ int vlan 20
+  ipv6 eigrp 10
+ int vlan 100
+  ipv6 eigrp 10
+  end
+~~~
+
+
+<br>
+
+
+__NAMED IPV6 EIGRP__
+~~~
+!@R4
+conf t
+ router eigrp hayupLAB
+  address-family ipv6 unicast autonomous-system 100
+   eigrp router-id 4.4.4.4
+   af-interface e1/0
+    no shut
+   af-interface e1/1
+    no shut
+	end
+~~~
+
+<br>
+
+~~~
+!@C1
+conf t
+ router eigrp hayupLAB
+  address-family ipv6 unicast autonomous-system 100
+   eigrp router-id 10.2.1.1
+   af-interface lo1
+    passive-interface
+	no shut
+   af-interface e1/1
+    no shut
+   af-interface vlan 10
+    no shut
+   af-interface vlan 20
+    no shut
+   af-interface vlan 100
+    no shut
+	end
+~~~
+
+<br>
+
+~~~
+!@C2
+conf t
+ router eigrp hayupLAB
+  address-family ipv6 unicast autonomous-system 100
+   eigrp router-id 10.2.1.2
+   af-interface lo2
+    passive-interface
+	no shut
+   af-interface e1/1
+    no shut
+   af-interface vlan 10
+    no shut
+   af-interface vlan 20
+    no shut
+   af-interface vlan 100
+    no shut
+	end
+show ipv6 protocol
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+## EIGRP IPv6 & OSPFv3 Redistribution
+
+~~~
+!@R4
+conf t
+ router ospfv3 6
+  address-family ipv6 unicast
+   redistribute eigrp 100 metric 40000 include-connected
+ router eigrp hayupLAB
+  address-family ipv6 unicast autonomous-system 100
+   topology base
+    redistribute ospf 6 metric 10000 100 255 1 1500  include-connected
+	end
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+## IPv6 Implementation
+
+1. Manual
+2. EUI-64
+3. SLAAC
+4. DHCPv6
+
+
+<br>
+<br>
+
+
+### Extended Unique Identifier 64 
+
+~~~
+!@R3, R4
+conf t
+ int e0/3
+  no shut
+  ipv6 add fd00:4::/64 eui-64
+  end
+show ipv6 int e0/3 | s uni
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### 🎯 Exercise 08: Apply the ipv6 network fd00:5::/64 between R3's e0/2 and R2's e0/2 using EUI-64. 
+- Determine the expected ipv6 address of both devices.
+
+~~~
+!@R2, R3
+conf t
+ int e0/2
+  no shut
+  ipv6 add fd00:5::/64 eui-64
+  end
+show ipv6 int e0/2 | s uni
+~~~
+
+<br>
+
+R2 e0/2: 
+R3 e0/2:
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### DHCPv6
+
+### 🎯 Exercise: Configure a DHCPv6 Server for TELSTRA.COM using the network fd00:6::4:0/112
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### 🎯 Exercise: Configure a DHCPv6 Server for CONCENTRIX.COM using the network fd00:7::/64 
+- Assign the network on VLAN 40 on C2. 
+- Make S1 & S2 the DHCP Client
+
+|             | IP Address                          |
+| ---         | ---                                 | 
+| Network ANY | fd00:7::                       /64  |
+| 1st IP      | fd00:7::1                      /64  |
+| Last IP     | fd00:7::FFFF:FFFF:FFFF:FF7F    /64  |
+|             |                                     |
+| 1st ANY     | fd00:7::FFFF:FFFF:FFFF:FF80    /64  |
+| Last ANY    | fd00:7::FFFF:FFFF:FFFF:FFFF    /64  |
+|             |                                     |
+| Not Net     | fd00:7:0:1::                   /64  |
+
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### SLAAC
+
+~~~
+!@C2
+conf t
+ int vlan 50
+  no shut
+  ipv6 add fd00:8::1/64
+  end
+~~~
+
+<br>
+
+~~~
+!@A1
+conf t
+ int e0/0
+  sw ac vlan 50
+  end
+~~~
+
+<br>
+
+~~~
+!@A2
+conf t
+ int e1/0
+  sw ac vlan 50
+  end
+~~~
+
+<br>
+
+~~~
+!@P1
+conf t
+ int e0/0
+  no shut
+  ipv6 add autoconfig
+  end
+sh ipv6 int br | ex una|down
+~~~
+
+<br>
+
+~~~
+!@P2,S1,S2
+conf t
+ int e1/0
+  no shut
+  ipv6 add autoconfig
+  end
+sh ipv6 int br | ex una|down
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+## IPv6 NDP vs ARP
+
+~~~
+!@P1
+show ipv6 int e0/0
+~~~
+
+<br>
+
+~~~
+!@C2
+show ipv6 int vlan 40
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### Setup IPv6 Default Gateway
+
+~~~
+!@C1
+conf t
+ int vlan 40
+  no shut
+  ipv6 add fd00:8::1/64
+  ipv6 add fe80:8::1 link-local
+  ipv6 nd ra lifetime 65000
+  end
+~~~
+
+<br>
+
+~~~
+!@C2
+conf t
+ int vlan 40
+  no shut
+  ipv6 add fe80:8::2 link-local
+  ipv6 add fd00:8::2/64
+  ipv6 nd ra lifetime 65000
+  end
+~~~
+
+<br>
+
+~~~
+!@A1
+conf t
+ int vlan 40
+  no shut
+  ipv6 add fe80:8::3 link-local
+  ipv6 add fd00:8::3/64
+  ipv6 nd ra lifetime 65000
+  end
+~~~
+
+<br>
+
+~~~
+!@A2
+conf t
+ int vlan 40
+  no shut
+  ipv6 add fe80:8::4 link-local
+  ipv6 add fd00:8::4/64
+  ipv6 nd ra lifetime 65000
+  end
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### 🎯 Exercise: Advertise VLAN 40 & 80 on EIGRP 100
+
+__Verify: Ping Using Source VLAN 40 IP__
+~~~
+!@P1
+ping 8:8:8:8::8888
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+## IPv6 First Hop Security
+
+1. __NDGUARD__
+2. __DHCPGUARD__
+3. __NDINSPECTION__
+
+
+<br>
+<br>
+
+### NDGUARD
+
+~~~
+!@A1
+conf t
+ ipv6 prefix-list ALLOW-RA seq 10 permit fe80:8::/64 le 128
+ !
+ ipv6 nd raguard policy TRUST-RA
+  device-role router
+  match ra prefix-list ALLOW-RA
+  exit
+ !
+ ipv6 nd raguard policy UNTRUST-RA
+  device-role host
+  exit
+ !
+ ipv6 nd raguard
+ ipv6 nd raguard attach-policy UNTRUST-RA
+ !
+ int range e0/1-3,e1/0
+  ipv6 nd raguard
+  ipv6 nd raguard attach-policy TRUST-RA
+  no shut
+ !
+ int e0/0
+  ipv6 nd raguard
+  ipv6 nd raguard attach-policy UNTRUST-RA
+  no shut
+  end
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### DHCP GUARD
+
+~~~
+!@A1
+conf t
+ ipv6 access-list DHCPS
+  permit ip host fd00:8::1 any 
+  permit ip host fe80:8::1 any 
+  permit ip host fd00:8::2 any
+  permit ip host fe80:8::2 any
+ !
+ ipv6 dhcp guard policy TRUST-DHCP
+  device-role server
+  match server access-list DHCPS
+  exit
+ ipv6 dhcp guard policy UNTRUST-DHCP
+  device-role client
+  exit
+ !
+ ipv6 dhcp guard
+ ipv6 dhcp guard attach-policy UNTRUST-DHCP
+ !
+ int range e0/1-3,e1/0
+  ipv6 nd raguard
+  ipv6 nd raguard attach-policy TRUST-DHCP
+  no shut
+ !
+ int e0/0
+  ipv6 nd raguard
+  ipv6 nd raguard attach-policy UNTRUST-DHCP
+  no shut
+  end
+~~~
+ 
+  
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### ND INSPECTION
+
+~~~
+!@A1
+conf t
+ ipv6 nd inspection policy TRUST-INSP
+  device-role router
+  sec-level minimum 1
+  exit
+ ipv6 nd inspection policy UNTRUST-INSP
+  device-role host
+  drop-unsecure
+  sec-level minimum 5
+  drop-unsecure
+  exit
+ !
+ int e0/0
+  ipv6 nd inspection attach-policy UNTRUST-INSP
+  end
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+# MPLS
+
+## Underlay Connectivity 
+
+### IGP (ISIS/OSPF)
+
+__Area Setup__
+| Device                       | Area ID |
+| ---                          | ---     |
+| PE-A, PE-B, PS1, PCore-A, RR | 11.1111 |
+| PE-Z, PE-Y, PS2, PCore-B     | 22.2222 |
+
+
+~~~
+!@PCore-A
+conf t
+ router isis MPLS
+  router-id lo0
+  net 11.1111.0000.0000.0010.00
+  is-type level-1-2
+  passive-interface lo0
+  !
+ int lo0
+  ip router isis MPLS
+ int range e0/2,e1/1-3
+  ip router isis MPLS
+  isis network point-to-point
+  end
+~~~
+
+<br>
+
+~~~
+!@PE-A
+conf t
+ router isis MPLS
+  router-id lo0
+  net 11.1111.0000.0000.0011.00
+  is-type level-1
+  passive-interface lo0
+  !
+ int lo0
+  ip router isis MPLS
+ int range e0/2,e1/2
+  ip router isis MPLS
+  isis network point-to-point
+  end
+~~~
+
+<br>
+
+~~~
+!@PE-B
+conf t
+ router isis MPLS
+  router-id lo0
+  net 11.1111.0000.0000.0012.00
+  is-type level-1
+  passive-interface lo0
+  !
+ int lo0
+  ip router isis MPLS
+ int e0/1
+  ip router isis MPLS
+  isis network point-to-point
+  end
+~~~
+
+<br>
+
+~~~
+!@PS1
+conf t
+ int lo0
+  ip add 172.16.2.1 255.255.255.255
+ ip routing
+ router isis MPLS
+  router-id lo0
+  net 11.1111.0000.0000.0013.00
+  is-type level-1
+  passive-interface lo0
+ int lo0
+  ip router isis MPLS
+ int e1/0
+  ip router isis MPLS
+  isis network point-to-point
+ int range vlan 69,vlan70,vlan75,vlan80
+  ip router isis MPLS
+  end
+~~~
+
+<br>
+
+~~~
+!@RR
+conf t
+ router isis MPLS
+  router-id lo0
+  net 11.1111.0000.0000.0014.00
+  is-type level-1-2
+  passive-interface lo0
+ int lo0
+  ip router isis MPLS
+ int range e0/1-2
+  ip router isis MPLS
+  isis network point-to-point
+  end
+~~~
+
+
+### 🎯 Exercise: Configure ISIS on the ff:
+| Device  | Area ID | System ID      |
+| ---     | ---     | ---            |
+| PCore-B | 22.2222 | 0000.0000.0020 |
+| PE-Y    | 22.2222 | 0000.0000.0021 |
+| PE-Z    | 22.2222 | 0000.0000.0022 |
+| PS2     | 22.2222 | 0000.0000.0023 |
+
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### Packet forwarding methods
+
+1. __Process Switching__ - The CPU processes each packet individually,
+looks up the destination in the routing table, and determines how to forward it.
+
+__Disable Other Processing Mechanisms__  
+~~~
+!@Cisco
+conf t
+ no ip cef
+ int range e1/1-2
+  no ip route-cache
+  end
+~~~
+
+<br>
+
+~~~
+!@Cisco
+conf t
+ logging console
+ end
+debug ip packet detail
+~~~
+
+
+<br>
+<br>
+
+
+2. __Fast Switching__ - The first packet is process-switched. 
+The router caches the forwarding result so subsequent packets to the same destination can be forwarded more quickly.
+
+~~~
+!@Cisco
+conf t
+ no ip cef
+ int range e1/1-2
+  ip route-cache
+  end
+show ip cache
+~~~
+
+
+<br>
+<br>
+
+
+3. __IP CEF__ - The router builds a Forwarding Information Base (FIB) and adjacency table ahead of time. 
+Packets can then be forwarded using those structures without a per-packet routing-table lookup.
+
+~~~
+!@Cisco
+conf t
+ ip cef
+ int range e1/1-2
+  no ip route-cache cef
+  end
+~~~
+
+
+<br>
+<br>
+
+
+4. dCEF - Distributes forwarding information to supported line cards or forwarding processors so packets can be forwarded locally, 
+without every packet needing to go through the central route processor
+
+~~~
+!@Cisco
+show ip cef
+show cef state
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### LDP (Label Distribution Protocol)
+
+~~~
+!@PE-A
+conf t
+ mpls ip
+ int range e0/2,e1/2
+  mpls ip
+  mpls label protocol ldp
+  mpls mtu override 1512 
+  end
+sh mpls ldp binding
+~~~
+
+<br>
+
+~~~
+!@PE-B
+conf t
+ mpls ip
+ int e0/1
+  mpls ip 
+  mpls label protocol ldp
+  mpls mtu override 1512
+  end
+show mpls ldp binding
+~~~
+
+<br>
+
+~~~
+!@PCore-A
+conf t
+ mpls ip
+ int range e0/2,e1/1-3
+  mpls ip 
+  mpls label protocol ldp
+  mpls mtu override 1512
+  end
+show mpls ldp binding
+~~~
+
+
+&nbsp;
+---
+&nbsp;
+
+
+### Reset LDP with custom Labels
+
+~~~
+!@Cisco
+clear mpls ldp neighbor *
+conf t
+ no mpls ip
+ mpls ip
+ end
+~~~
+
+<br>
+
+
+~~~
+!@PE-A
+conf t
+ mpls label range 100 199
+ ip cef
+ no mpls ip
+ mpls ip
+ int range e0/2,e1/2
+  mpls ip
+  mpls label protocol ldp
+  mpls mtu override 1512 
+  end
+clear mpls ldp neighbor *
+show mpls forwarding-table
+~~~
+
+<br>
+
+~~~
+!@PE-B
+conf t
+ mpls label range 200 299
+ ip cef
+ no mpls ip
+ mpls ip
+ int e0/1
+  mpls ip 
+  mpls label protocol ldp
+  mpls mtu override 1512
+  end
+clear mpls ldp neighbor *
+show mpls forwarding-table
+~~~
+
+<br>
+
+~~~
+!@PCore-A
+conf t
+ mpls label range 300 399
+ ip cef
+ no mpls ip
+ mpls ip
+ int range e0/2,e1/1-3
+  mpls ip 
+  mpls label protocol ldp
+  mpls mtu override 1512
+  end
+clear mpls ldp neighbor *
+show mpls forwarding-table
+~~~
+
+<br>
+
+~~~
+!@RR
+conf t
+ mpls label range 400 499
+ ip cef
+ no mpls ip
+ mpls ip
+ int lo1
+  ip add 192.168.1.7 255.255.255.255
+ int range e0/1,e0/2
+  mpls ip 
+  mpls label protocol ldp
+  mpls mtu override 1512
+  end
+clear mpls ldp neighbor *
+show mpls forwarding-table
+~~~
+
+
+<br>
+<br>
+
+
+__MPLS LDP AUTOCONFIG__
+~~~
+!@PCore-B
+conf t
+ mpls label range 500 599
+ ip cef
+ no mpls ip
+ mpls ip
+ router isis MPLS
+  mpls ldp autoconfig
+ !
+ int range e0/2,e1/1-3
+  mpls mtu override 1512
+  end
+clear mpls ldp neighbor *
+show mpls forwarding-table
+~~~
+
+<br>
+
+~~~
+!@PE-Z
+conf t
+ mpls label range 600 699
+ ip cef
+ no mpls ip
+ mpls ip
+ router isis MPLS
+  mpls ldp autoconfig
+ !
+ int range e0/2,e1/0
+  mpls mtu override 1512
+  end
+clear mpls ldp neighbor *
+show mpls forwarding-table
+~~~
+
+<br>
+
+~~~
+!@PE-Y
+conf t
+ mpls label range 700 799
+ ip cef
+ mpls ip
+ router isis MPLS
+  mpls ldp autoconfig
+ !
+ int range e0/1
+  mpls mtu override 1512
+  end
+clear mpls ldp neighbor *
+show mpls forwarding-table
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+## Overlay Connectivity
+
+### Establish Client interfaces (VRFs)
+
+
+__Classic VRF__
+~~~
+!@PE-A
+conf t
+ ip vrf PNB
+  rd                65000:01
+  route-target both 65000:01
+  exit
+ !
+ int e1/0
+  ip vrf forwarding PNB
+  ip add 10.1.1.2 255.255.255.252
+  end
+~~~
+
+<br>
+
+__Multiprotocol VRF__
+~~~
+!@PE-A
+conf t
+ vrf definition PNB
+  rd                 65000:01
+  route-target  both 65000:01
+  address-family ipv4
+   exit
+ vrf definition BPI
+  rd                 65000:02
+  route-target  both 65000:02
+  address-family ipv4
+   exit
+  exit
+ !
+ int e1/0
+  vrf forwarding PNB
+  ip add 10.1.1.2 255.255.255.252
+  no shut
+ int e1/1
+  vrf forwarding BPI
+  ip add 10.1.1.2 255.255.255.252
+  no shut
+  end
+~~~
+
+<br>
+
+~~~
+!@PE-B
+conf t
+ vrf definition BPO
+  rd                 65000:03
+  route-target  both 65000:03
+  address-family ipv4
+   exit
+  exit
+ !
+ int e0/0
+  vrf forwarding BPO
+  ip add 10.1.1.2 255.255.255.252
+  no shut
+  end
+~~~
+
+<br>
+
+~~~
+!@PE-Z
+conf t
+ vrf definition PNB
+  rd                 65000:01
+  route-target  both 65000:01
+  address-family ipv4
+   exit
+ vrf definition BPI
+  rd                 65000:02
+  route-target  both 65000:02
+  address-family ipv4
+   exit
+  exit
+ !
+ int e1/1
+  vrf forwarding PNB
+  ip add 10.1.1.6 255.255.255.252
+  no shut
+ int e1/2
+  vrf forwarding BPI
+  ip add 10.1.1.6 255.255.255.252
+  no shut
+  end
+~~~
+
+<br>
+
+~~~
+!@PE-Y
+conf t
+ vrf definition BPO
+  rd                 65000:03
+  route-target  both 65000:03
+  address-family ipv4
+   exit
+  exit
+ !
+ int e0/0
+  vrf forwarding BPO
+  ip add 10.1.1.6 255.255.255.252
+  no shut
+  end
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### mpBGP
+
+~~~
+!@PE-A,PE-B,PE-Z,PE-Y
+conf t
+ no router bgp 65000
+ router bgp 65000
+  no synchronization
+  no bgp default ipv4-unicast
+  bgp log-neighbor-changes
+  neighbor 172.16.1.7 remote-as 65000
+  neighbor 172.16.1.7 update-source lo0
+  address-family vpnv4
+   neighbor 172.16.1.7 activate
+   neighbor 172.16.1.7 send-community both
+   end
+sh ip bgp vpnv4 all summary
+~~~
+
+<br>
+
+~~~
+!@RR
+conf t
+ no router bgp 65000
+ router bgp 65000
+  no synchronization
+  no bgp default ipv4-unicast
+  bgp log-neighbor-changes
+  neighbor 172.16.1.1 remote-as 65000
+  neighbor 172.16.1.1 update-source lo0
+  neighbor 172.16.1.4 remote-as 65000
+  neighbor 172.16.1.4 update-source lo0
+  neighbor 172.16.1.5 remote-as 65000
+  neighbor 172.16.1.5 update-source lo0
+  neighbor 172.16.1.6 remote-as 65000
+  neighbor 172.16.1.6 update-source lo0
+  address-family vpnv4
+   neighbor 172.16.1.1 activate
+   neighbor 172.16.1.1 route-reflector-client
+   neighbor 172.16.1.1 send-community both
+   neighbor 172.16.1.4 activate
+   neighbor 172.16.1.4 route-reflector-client
+   neighbor 172.16.1.4 send-community both
+   neighbor 172.16.1.5 activate
+   neighbor 172.16.1.5 route-reflector-client
+   neighbor 172.16.1.5 send-community both
+   neighbor 172.16.1.6 activate
+   neighbor 172.16.1.6 route-reflector-client
+   neighbor 172.16.1.6 send-community both
+   end
+~~~
+
+<br>
+
+__Using Templates (POLICY-inAddressFamily)__
+~~~
+!@RR
+conf t
+ no router bgp 65000
+ router bgp 65000
+  no synchronization
+  no bgp default ipv4-unicast
+  bgp log-neighbor-changes
+  !
+  template peer-session SESSION
+   update-source lo0
+   remote-as 65000
+  template peer-policy POLICY
+   route-reflector-client
+  !
+  neighbor 172.16.1.1 inherit peer-session SESSION
+  neighbor 172.16.1.4 inherit peer-session SESSION
+  neighbor 172.16.1.5 inherit peer-session SESSION
+  neighbor 172.16.1.6 inherit peer-session SESSION
+  address-family vpnv4
+   neighbor 172.16.1.1 activate
+   neighbor 172.16.1.1 inherit peer-policy POLICY
+   neighbor 172.16.1.4 activate
+   neighbor 172.16.1.4 inherit peer-policy POLICY
+   neighbor 172.16.1.5 activate
+   neighbor 172.16.1.5 inherit peer-policy POLICY
+   neighbor 172.16.1.6 activate
+   neighbor 172.16.1.6 inherit peer-policy POLICY
+   end
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+## PE-CE Routing
+
+### BGP
+
+__BPI__
+~~~
+!@BPI-A
+conf t
+ int lo0
+  ip add 192.168.2.1 255.255.255.255
+  exit
+ !
+ no router bgp 65002
+ router bgp 65002
+  bgp log-neighbor-changes
+  neighbor 10.1.1.2 remote-as 65000
+  address-family ipv4
+   neighbor 10.1.1.2 activate
+   network 10.1.1.0 mask 255.255.255.252
+   network 192.168.2.1 mask 255.255.255.255
+   end
+~~~
+
+<br>
+
+~~~
+!@PE-A
+conf t
+ router bgp 65000
+  address-family ipv4 vrf BPI
+   neighbor 10.1.1.1 remote-as 65002
+   neighbor 10.1.1.1 activate
+   network 10.1.1.0 mask 255.255.255.252
+   end
+sh ip route vrf BPI
+sh bgp vpnv4 unicast all
+~~~
+
+<br>
+
+~~~
+!@BPI-B
+conf t
+ int lo0
+  ip add 192.168.2.2 255.255.255.255
+  exit
+ !
+ no router bgp 65002
+ router bgp 65002
+  bgp log-neighbor-changes
+  neighbor 10.1.1.6 remote-as 65000
+  address-family ipv4
+   neighbor 10.1.1.6 activate
+   network 10.1.1.4 mask 255.255.255.252
+   network 192.168.2.2 mask 255.255.255.255
+   end
+~~~
+
+<br>
+
+~~~
+!@PE-Z
+conf t
+ router bgp 65000
+  address-family ipv4 vrf BPI
+   neighbor 10.1.1.5 remote-as 65002
+   neighbor 10.1.1.5 activate
+   network 10.1.1.4 mask 255.255.255.252
+   end
+sh ip route vrf BPI
+sh bgp vpnv4 unicast all
+sh bgp vpnv4 uni all label
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### EIGRP
+
+__PNB__
+~~~
+!@PNB-A
+conf t
+ int lo0
+  ip add 192.168.2.1 255.255.255.255
+  exit
+ !
+ no router eigrp PNB-SITE-A
+ router eigrp PNB-SITE-A
+  address-family ipv4 unicast autonomous-system 100
+   network 192.168.2.1 0.0.0.0
+   network 10.1.1.0 0.0.0.3
+   af-interface loopback 0
+    passive-interface
+	exit
+   topology base
+    no auto-summary
+    end
+~~~
+
+<br>
+
+
+~~~
+!@PE-A
+conf t
+ no router eigrp PE-A
+ router eigrp PE-A
+  address-family ipv4 unicast vrf PNB autonomous-system 100
+   network 10.1.1.0 0.0.0.3
+   topology base
+    no auto-summary
+	end
+sh ip route vrf PNB
+~~~
+
+
+<br>
+
+
+~~~
+!@PNB-B
+conf t
+ int lo0
+  ip add 192.168.2.2 255.255.255.255
+  exit
+ !
+ no router eigrp PNB-SITE-B
+ router eigrp PNB-SITE-B
+  address-family ipv4 unicast autonomous-system 100
+   network 192.168.2.2 0.0.0.0
+   network 10.1.1.4 0.0.0.3
+   af-interface loopback 0
+    passive-interface
+	exit
+   topology base
+    no auto-summary
+    end
+~~~
+
+
+<br>
+
+
+~~~
+!@PE-Z
+conf t
+ no router eigrp PE-Z
+ router eigrp PE-Z
+  address-family ipv4 unicast vrf PNB autonomous-system 100
+   network 10.1.1.4 0.0.0.3
+   topology base
+    no auto-summary
+	end
+sh ip route vrf PNB
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### Route Redistribution
+
+~~~
+!@PE-A
+conf t
+ router eigrp PE-A
+  address-family ipv4 uni vrf PNB auto 100
+   topology base
+    redistribute bgp 65000 metric 10000 100 255 1 1500
+ !
+ router bgp 65000
+  address-family ipv4 vrf PNB
+   redistribute eigrp 100
+   end
+sh bgp vpnv4 unicast all
+~~~
+
+<br>
+
+~~~
+!@PE-Z
+conf t
+ router eigrp PE-Z
+  address-family ipv4 uni vrf PNB auto 100
+   topology base
+    redistribute bgp 65000 metric 10000 100 255 1 1500
+ !
+ router bgp 65000
+  address-family ipv4 vrf PNB
+   redistribute eigrp 100
+   end
+sh bgp vpnv4 unicast all
+sh bgp vpnv4 unicast all  192.168.2.1/32 
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### 🎯 Exercise: Configure BPO client with the ff:
+- Routing Protocol: OSPF
+- Single Area: 0
+
+~~~
+!@BPO-A
+conf t
+ int lo0
+  ip add 192.168.1.1 255.255.255.255
+  exit
+ !
+ router ospf 1
+  router-id 192.168.1.1
+  network 10.1.1.0 0.0.0.3 area 0
+  passive-interface lo0
+  end
+~~~
+
+<br>
+
+~~~
+!@BPO-B
+conf t
+ int lo0
+  ip add 192.168.1.2 255.255.255.255
+  exit
+ !
+ router ospf 1
+  router-id 192.168.1.2
+  network 10.1.1.4 0.0.0.3 area 0
+  passive-interface lo0
+  end
+~~~
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### 🎯 Exercise: Configure BSP as a new Client
+- VRF: BSP
+- RD/RT: 65000:04
+- Routing Protocol: RIPv2
+- BSP-A Lo0: 192.168.1.1/32
+- BSP-B Lo0: 192.168.1.2/32
+- Tip* Redistribution Requires a metric
+
+Verify by pinging lo0 of the other site.
+
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+## S2S-VPN
+
+~~~
+!@PNB-A
+conf t
+ no ip access-list extended VPN-TRAFFIC
+ ip access-list extended VPN-TRAFFIC
+  permit ip host 192.168.2.1 host 192.168.2.2
+ !
+ crypto isakmp policy 1
+  encryption aes 256
+  hash sha256
+  group 14
+  authentication pre-share
+  lifetime 60
+ !
+ crypto isakmp key C1sc0123 address 10.1.1.5
+ !
+ crypto ipsec transform-set TS1 esp-aes 256 esp-sha256-hmac
+  mode tunnel
+ !
+ crypto map PNB-VPN 1 ipsec-isakmp
+  set peer 10.1.1.5
+  set transform-set TS1
+  match address VPN-TRAFFIC
+ !
+ int e1/1
+  crypto map PNB-VPN
+  end
+~~~
+
+<br>
+
+~~~
+!@PNB-B
+conf t
+ no ip access-list extended VPN-TRAFFIC
+ ip access-list extended VPN-TRAFFIC
+  permit ip host 192.168.2.2 host 192.168.2.1
+ !
+ crypto isakmp policy 1
+  encryption aes 256
+  hash sha256
+  group 14
+  authentication pre-share
+  lifetime 60
+ !
+ crypto isakmp key C1sc0123 address 10.1.1.1
+ !
+ crypto ipsec transform-set TS1 esp-aes 256 esp-sha256-hmac
+  mode tunnel
+ !
+ crypto map PNB-VPN 1 ipsec-isakmp
+  set peer 10.1.1.1
+  set transform-set TS1
+  match address VPN-TRAFFIC
+ !
+ int e1/3
+  crypto map PNB-VPN
+  end
+show crypto isakmp sa
+ping 192.168.2.1 source 192.168.2.2
+~~~
+
+
+&nbsp;
+---
+&nbsp;
+
+
+### GRE over IPSec
+
+~~~
+!@BPI-A
+conf t
+ no ip access-list extended VPN-TRAFFIC
+ ip access-list extended VPN-TRAFFIC
+  permit gre host 10.1.1.1 host 10.1.1.5
+ !
+ crypto isakmp policy 1
+  encryption aes 256
+  hash sha256
+  group 14
+  authentication pre-share
+  lifetime 86400
+ !
+ crypto isakmp key C1sc0123 address 10.1.1.5
+ !
+ crypto ipsec transform-set TS1 esp-aes 256 esp-sha256-hmac
+  mode transport
+ !
+ crypto map BPI-VPN 1 ipsec-isakmp
+  set peer 10.1.1.5
+  set transform-set TS1
+  match address VPN-TRAFFIC
+ !
+ int e1/1
+  crypto map BPI-VPN
+ !
+ int tunnel0
+  ip add 172.16.1.1 255.255.255.252
+  ip mtu 1400
+  ip tcp adjust-mss 1360
+  tunnel source 10.1.1.1
+  tunnel destination 10.1.1.5
+  tunnel mode gre ip
+  no shut
+ !
+ ip route 192.168.2.2 255.255.255.255 172.16.1.2
+ end
+~~~
+
+<br>
+
+~~~
+!@BPI-B
+conf t
+ no ip access-list extended VPN-TRAFFIC
+ ip access-list extended VPN-TRAFFIC
+  permit gre host 10.1.1.5 host 10.1.1.1
+ !
+ crypto isakmp policy 1
+  encryption aes 256
+  hash sha256
+  group 14
+  authentication pre-share
+  lifetime 86400
+ !
+ crypto isakmp key C1sc0123 address 10.1.1.1
+ !
+ crypto ipsec transform-set TS1 esp-aes 256 esp-sha256-hmac
+  mode transport
+ !
+ crypto map BPI-VPN 1 ipsec-isakmp
+  set peer 10.1.1.1
+  set transform-set TS1
+  match address VPN-TRAFFIC
+ !
+ int e1/3
+  crypto map BPI-VPN
+ !
+ int tunnel0
+  ip add 172.16.1.2 255.255.255.252
+  ip mtu 1400
+  ip tcp adjust-mss 1360
+  tunnel source 10.1.1.5
+  tunnel destination 10.1.1.1
+  tunnel mode gre ip
+  no shut
+ !
+ ip route 192.168.2.1 255.255.255.255 172.16.1.1
+ end
+show crypto isakmp sa
+ping 192.168.2.1 source 192.168.2.2
+~~~
+
+<br>
+
+~~~
+!@BPI-B
+show crypto ipsec sa
+show crypto session
+~~~
+
+
+&nbsp;
+---
+&nbsp;
+
+
+### VTI IPSec
+
+~~~
+!@BPO-A
+conf t
+ crypto ikev2 proposal PROP1
+  encryption aes-cbc-256
+  integrity sha256
+  group 14
+ !
+ crypto ikev2 policy POL1
+  proposal PROP1
+ !
+ crypto ikev2 keyring KEY1
+  peer BSP-B
+   address 10.1.1.5
+   pre-shared-key local C1sc0123
+   pre-shared-key remote C1sc0123
+ !
+ crypto ikev2 profile IKEV2-PROF1
+  match identity remote address 10.1.1.5 255.255.255.255
+  authentication local pre-share
+  authentication remote pre-share
+  keyring local KEY1
+  lifetime 86400
+ !
+ crypto ipsec transform-set TS1 esp-aes 256 esp-sha256-hmac
+  mode tunnel
+ !
+ crypto ipsec profile IPSEC-PROF1
+  set transform-set TS1
+  set ikev2-profile IKEV2-PROF1
+  set pfs group14
+ !
+ int tunnel0
+  ip add 172.16.1.1 255.255.255.252
+  tunnel source 10.1.1.1
+  tunnel destination 10.1.1.5
+  tunnel mode ipsec ipv4
+  tunnel protection ipsec profile IPSEC-PROF1
+  ip mtu 1400
+  ip tcp adjust-mss 1360
+ !
+ ip route 192.168.1.2 255.255.255.255 172.16.1.2
+ end
+~~~
+
+<br>
+
+~~~
+!@BPO-B
+conf t
+ crypto ikev2 proposal PROP1
+  encryption aes-cbc-256
+  integrity sha256
+  group 14
+ !
+ crypto ikev2 policy POL1
+  proposal PROP1
+ !
+ crypto ikev2 keyring KEY1
+  peer BSP-A
+   address 10.1.1.1
+   pre-shared-key local C1sc0123
+   pre-shared-key remote C1sc0123
+ !
+ crypto ikev2 profile IKEV2-PROF1
+  match identity remote address 10.1.1.1 255.255.255.255
+  authentication local pre-share
+  authentication remote pre-share
+  keyring local KEY1
+  lifetime 86400
+ !
+ crypto ipsec transform-set TS1 esp-aes 256 esp-sha256-hmac
+  mode tunnel
+ !
+ crypto ipsec profile IPSEC-PROF1
+  set transform-set TS1
+  set ikev2-profile IKEV2-PROF1
+  set pfs group14
+ !
+ int tunnel0
+  ip add 172.16.1.2 255.255.255.252
+  tunnel source 10.1.1.5
+  tunnel destination 10.1.1.1
+  tunnel mode ipsec ipv4
+  tunnel protection ipsec profile IPSEC-PROF1
+  ip mtu 1400
+  ip tcp adjust-mss 1360
+ !
+ ip route 192.168.1.1 255.255.255.255 172.16.1.1
+ end
+show crypto ikev2 sa
+ping 192.168.1.1 source 192.168.1.2
+~~~
+
+<br>
+
+~~~
+!@PNB-B
+show crypto ipsec sa
+show crypto session
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+## L2VPN EVPN
+Devices:
+- 2x CSR1000v
+- 2x TinyCore (yvm.ova)
+
+CSR1000v:
+  Name: PE-PH
+  
+  | NetAdapter   |         |
+  | ---          | ---     |
+  | NetAdapter   | VMNet3  |
+  | NetAdapter 2 | VMNet2  |
+  | NetAdapter 3 | VMNet15 |
+  
+
+CSR1000v:
+  Name: PE-JP
+  
+  | NetAdapter   |         |
+  | ---          | ---     |
+  | NetAdapter   | VMNet3  |
+  | NetAdapter 2 | VMNet2  |
+  | NetAdapter 3 | VMNet16 |
+
+
+TinyCore (yvm.ova):
+  Name: PC-PH
+  
+  | NetAdapter   |                    |
+  | ---          | ---                |
+  | NetAdapter   | VMNet3             |
+  
+TinyCore (yvm.ova):
+  Name: PC-JP
+  
+  | NetAdapter   |                    |
+  | ---          | ---                |
+  | NetAdapter   | VMNet4             |
+
+
+~~~
+!@PE-PH
+conf t
+ hostname ProviderEdge-PH
+ enable secret pass
+ service password-encryption
+ no logging cons
+ no ip domain lookup
+ line vty 0 14
+  transport input all
+  password pass
+  login local
+  exec-timeout 0 0
+ int lo0
+  ip add 172.16.1.100 255.255.255.255
+ int g2
+  ip add 192.168.102.11 255.255.255.0
+  no shut
+ int g3
+  ip add 10.1.2.6 255.255.255.252
+  no shut
+ !
+ username admin privilege 15 secret pass
+ ip http server
+ ip http secure-server
+ ip http authentication local
+ !
+ mpls ip
+ router isis MPLS
+  router-id lo0
+  net 11.1111.0000.0000.0100.00
+  passive-interface lo0
+  is-type level-1-2
+  mpls ldp autoconfig
+ !
+ int lo0
+  ip router isis MPLS
+ int g3
+  ip router isis MPLS
+  isis network point-to-point
+  mpls mtu override 1512
+  mpls label protocol ldp
+  end
+wr
+!
+~~~
+
+<br>
+
+~~~
+!@PE-JP
+conf t
+ hostname PE-JP
+ enable secret pass
+ service password-encryption
+ no logging cons
+ no ip domain lookup
+ line vty 0 14
+  transport input all
+  password pass
+  login local
+  exec-timeout 0 0
+ int lo0
+  ip add 172.16.1.200 255.255.255.255
+ int g2
+  ip add 192.168.102.12 255.255.255.0
+  no shut
+ int g3
+  ip add 10.1.3.6 255.255.255.252
+  no shut
+ !
+ username admin privilege 15 secret pass
+ ip http server
+ ip http secure-server
+ ip http authentication local
+ !
+ mpls ip
+ router isis MPLS
+  router-id lo0
+  net 22.2222.0000.0000.0200.00
+  passive-interface lo0
+  is-type level-1-2
+  mpls ldp autoconfig
+ !
+ int lo0
+  ip router isis MPLS
+ int g3
+  ip router isis MPLS
+  isis network point-to-point
+  mpls mtu override 1512
+  mpls label protocol ldp
+  end
+ end
+wr
+!
+~~~
+
+<br>
+
+~~~
+!@PE-B
+conf t
+ int e0/2
+  no shut
+  ip add 10.1.2.5 255.255.255.252
+  ip router isis MPLS
+  isis network point-to-point
+  mpls ip
+  mpls mtu override 1512
+  mpls label protocol ldp
+  end
+~~~
+
+<br>
+
+~~~
+!@PE-Y
+conf t
+ int e0/2
+  no shut
+  ip add 10.1.3.5 255.255.255.252
+  ip router isis MPLS
+  isis network point-to-point
+  mpls ip
+  mpls mtu override 1512
+  mpls label protocol ldp
+  end
+~~~
+
+<br>
+
+~~~
+!@PC-PH
+sudo su
+ hostname RCBC-PC1
+ modprobe 8021q
+ vconfig add eth0 11
+ ifconfig eth0.11 192.168.100.1 netmask 255.255.255.0 up
+ 
+!
+~~~
+
+<br>
+
+~~~
+!@PC-JP
+sudo su
+ hostname RCBC-PC2
+ modprobe 8021q
+ vconfig add eth0 11
+ ifconfig eth0.11 192.168.100.254 netmask 255.255.255.0 up
+!
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### Direct mpBGP Peering
+
+~~~
+!@PE-PH
+conf t
+ router bgp 65000
+  neighbor 172.16.1.200 remote-as 65000
+  neighbor 172.16.1.200 update-source lo0
+  address-family l2vpn evpn
+   neighbor 172.16.1.200 activate
+   neighbor 172.16.1.200 send-community both
+   neighbor 172.16.1.200 soft-reconfiguration inbound
+   end
+~~~
+
+<br>
+
+~~~
+!@PE-JP
+conf t
+ router bgp 65000
+  neighbor 172.16.1.100 remote-as 65000
+  neighbor 172.16.1.100 update-source lo0
+  address-family l2vpn evpn
+   neighbor 172.16.1.100 activate
+   neighbor 172.16.1.100 send-community both
+   neighbor 172.16.1.100 soft-reconfiguration inbound
+   end
+~~~
+
+
+__or via Route Reflector__
+~~~
+!@PE-PH, !@PE-JP
+conf t
+ router bgp 65000
+  neighbor 172.16.1.7 remote-as 65000
+  neighbor 172.16.1.7 update-source lo0
+  address-family l2vpn evpn
+   neighbor 172.16.1.7 activate
+   neighbor 172.16.1.7 send-community both
+   neighbor 172.16.1.7 soft-reconfiguration inbound
+   end
+~~~
+
+<br>
+
+~~~
+!@RR
+conf t
+ router bgp 65000
+  neighbor 172.16.1.100 inherit peer-session SESSION
+  neighbor 172.16.1.200 inherit peer-session SESSION
+  address-family l2vpn evpn
+   neighbor 172.16.1.100 activate
+   neighbor 172.16.1.100 inherit peer-policy POLICY
+   neighbor 172.16.1.100 soft-reconfiguration inbound
+   neighbor 172.16.1.200 activate
+   neighbor 172.16.1.200 inherit peer-policy POLICY
+   neighbor 172.16.1.200 soft-reconfiguration inbound
+   end
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### L2VPN Instance and Bridging
+
+~~~
+!@PE-PH
+conf t
+ l2vpn evpn
+  replication-type ingress
+  mpls label mode per-ce
+  router-id lo0
+ !
+ l2vpn evpn instance 10 vlan-based
+  rd 192.168.1.1:100
+  route-target both 100:100
+  replication-type ingress
+ !
+ bridge-domain 10
+  member gigabitEthernet 1 service-instance 10
+  member evpn-instance 10
+ !
+ int g1
+  no shut
+  no ip add
+  service instance 10 ethernet
+   encapsulation untagged
+  end
+~~~
+
+<br>
+
+~~~  
+!@PE-JP
+conf t
+ l2vpn evpn
+  replication-type ingress
+  mpls label mode per-ce
+  router-id lo0
+ !
+ l2vpn evpn instance 10 vlan-based
+  rd 192.168.1.254:100
+  route-target both 100:100
+  replication-type ingress
+ !
+ bridge-domain 10
+  member gigabitEthernet 1 service-instance 10
+  member evpn-instance 10
+ !
+ int g1
+  no shut
+  no ip add
+  service instance 10 ethernet
+   encapsulation untagged
+  end
+show bgp l2vpn evpn summary 
+show bridge-domain evpn  
+show l2vpn evpn mac
+show l2vpn evpn evi
+show ethernet service instance id 10 int g1 detail
+~~~
+
+
+<br>
+<br>
+
+---
+&nbsp;
+
+
+### Dot1q Tunneling (802.1ad)
+
+__Setup__
+~~~
+!@BSP-A
+conf t
+ int e0/1
+  shut
+ int e0/2
+  no shut
+  ip add 192.168.12.100 255.255.255.0
+  end
+~~~
+
+<br>
+
+~~~
+!@BSP-B
+conf t
+ int e0/1
+  shut
+ int e0/2
+  no shut
+  ip add 192.168.12.200 255.255.255.0
+  end
+~~~
+
+<br>
+
+~~~
+!@CS1,CS2
+conf t
+ int range e0/0-1
+  switchport mode access
+  switchport access vlan 12
+  no shut
+  end
+~~~
+
+
+<br>
+<br>
+
+
+### L2 Infra: Trunk, LACP, and Customer VLAN
+
+__Trunking and Etherchannel__
+~~~
+!@PS1
+conf t
+ int range e0/1-3
+  channel-group 10 mode active
+  channel-protocol lacp
+ !
+ int po10
+  switchport trunk encaps dot1q
+  switchport mode trunk
+  switchport trunk allowed vlan all
+  switchport trunk native vlan 80
+  end
+show etherchannel summary
+show int po10 | inc BW
+~~~
+
+<br>
+
+__VTP__
+~~~
+!@PS1,PS2
+conf t
+ vtp mode server
+ vtp version 2
+ vtp domain ccnp
+ vtp password pass
+ !
+ vlan 69
+  name BSP-CLIENT
+  end
+~~~
+
+<br>
+
+__QinQ__
+~~~
+!@PS1,PS2
+conf t
+ int e0/0
+  switchport access vlan 69
+  switchport mode dot1q-tunnel
+  switchport nonegotiate
+  no shut
+  end
+~~~
